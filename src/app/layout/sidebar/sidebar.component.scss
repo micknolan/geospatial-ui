@@ -1,0 +1,86 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.sidebar {
+  width: 232px;
+  flex-shrink: 0;
+  height: 100%;
+  background: var(--sidebar-bg);
+  display: flex;
+  flex-direction: column;
+  padding: 20px 16px;
+  box-sizing: border-box;
+}
+
+.workspace {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  margin-bottom: 20px;
+}
+
+.workspace-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 6px;
+  color: #a3ada6;
+  font-size: 13px;
+  cursor: pointer;
+
+  &:hover {
+    color: #cdd6d0;
+    text-decoration: none;
+  }
+
+  &.active {
+    background: var(--sidebar-active-bg);
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  &.disabled {
+    cursor: default;
+    color: #cdd6d0;
+
+    &:hover {
+      color: #cdd6d0;
+    }
+  }
+}
+
+.admin {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #6e7a72;
+  text-transform: uppercase;
+  padding: 0 10px 6px;
+}

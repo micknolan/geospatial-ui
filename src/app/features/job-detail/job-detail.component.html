@@ -1,0 +1,155 @@
+@if (job(); as j) {
+  <div class="topbar">
+    <div class="crumb">
+      <span>Forestry</span><span class="sep">/</span><a routerLink="/jobs">Jobs</a><span class="sep">/</span><span class="current">{{ j.name }}</span>
+    </div>
+    <div class="actions">
+      <a [routerLink]="['/jobs', j.id, 'edit']" class="secondary-btn">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#1c2321" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        Edit
+      </a>
+      @if (j.status === 'running') {
+        <div class="running-pill">
+          <span class="running-dot"></span>
+          <span>Running &mdash; {{ j.progressComplete }} of {{ j.progressTotal }} complete</span>
+        </div>
+      } @else {
+        <app-status-badge [status]="j.status"></app-status-badge>
+      }
+    </div>
+  </div>
+
+  <div class="body">
+
+    <div class="main-card">
+      <div>
+        <div class="title">{{ j.name }}</div>
+        <div class="desc">{{ j.description }}</div>
+      </div>
+
+      <div class="tabs">
+        <button type="button" class="tab" [class.active]="tab() === 'queries'" (click)="setTab('queries')">Queries</button>
+        <button type="button" class="tab" [class.active]="tab() === 'runs'" (click)="setTab('runs')">Runs</button>
+        <button type="button" class="tab" [class.active]="tab() === 'results'" (click)="setTab('results')">Results</button>
+      </div>
+
+      @if (tab() === 'queries') {
+        @if (j.progressTotal) {
+          <div class="progress-block">
+            <div class="progress-head">
+              <span class="progress-label">{{ j.progressComplete }} of {{ j.progressTotal }} queries complete</span>
+              <span class="progress-started">Started {{ j.startedLabel }}</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" [style.width.%]="progressPct()"></div>
+            </div>
+          </div>
+        }
+
+        <div class="run-list">
+          @for (run of runs(); track run.id) {
+            <div class="run-row" [class.running]="run.status === 'running'" [class.queued]="run.status === 'queued'">
+              <div class="run-name">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#5b655f" stroke-width="1.75" stroke-linecap="round">
+                  @if (isNearest(run.operator)) {
+                    <circle cx="12" cy="12" r="8"/><line x1="12" y1="4" x2="12" y2="7"/><line x1="12" y1="17" x2="12" y2="20"/><line x1="4" y1="12" x2="7" y2="12"/><line x1="17" y1="12" x2="20" y2="12"/>
+                  } @else {
+                    <circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/>
+                  }
+                </svg>
+                <span class="name-text">{{ run.name }}</span>
+              </div>
+
+              @if (run.status === 'succeeded') {
+                <div class="run-status">
+                  <div class="status-line">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="8 12.5 10.5 15 16 9"/></svg>
+                    <span class="succeeded">Succeeded</span>
+                  </div>
+                  <span class="run-meta">{{ run.matches }} matches &middot; {{ run.durationLabel }}</span>
+                </div>
+              } @else if (run.status === 'running') {
+                <div class="run-status">
+                  <div class="status-line">
+                    <span class="running-dot"></span>
+                    <span class="running-text">Running&hellip;</span>
+                  </div>
+                  <span class="run-meta">{{ run.elapsedLabel }}</span>
+                </div>
+              } @else {
+                <div class="queued-status">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#8b948e" stroke-width="1.75"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>
+                  <span>Queued</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      } @else if (tab() === 'runs') {
+        <div class="empty-tab">Run history for this job will appear here once it has completed at least once.</div>
+      } @else {
+        <div class="empty-tab">Results are available once the job succeeds — they're stored as JSON, keyed by this job's reference number.</div>
+      }
+    </div>
+
+    <div class="info-panel">
+      <span class="panel-title">Job Info</span>
+
+      <div>
+        <label class="field-label">Reference number</label>
+        <div class="ref-box">
+          <span class="ref-value">{{ j.referenceNumber }}</span>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#8b948e" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+        </div>
+      </div>
+
+      <div class="rule"></div>
+
+      <div class="info-rows">
+        <div class="info-row">
+          <span class="k">Status</span>
+          <app-status-badge [status]="j.status"></app-status-badge>
+        </div>
+        <div class="info-row"><span class="k">Execution mode</span><span class="v">{{ j.mode }}</span></div>
+        <div class="info-row"><span class="k">Workspace</span><span class="v">{{ j.workspace }}</span></div>
+        <div class="info-row"><span class="k">Created by</span><span class="v">{{ j.createdBy }}</span></div>
+        <div class="info-row"><span class="k">Created</span><span class="v">{{ j.createdLabel }}</span></div>
+        @if (j.startedLabel) {
+          <div class="info-row"><span class="k">Started</span><span class="v">{{ j.startedLabel }}</span></div>
+        }
+        @if (j.avgQueryDuration) {
+          <div class="info-row"><span class="k">Avg. query duration</span><span class="v">{{ j.avgQueryDuration }}</span></div>
+        }
+        @if (j.matchesSoFar !== undefined) {
+          <div class="info-row"><span class="k">Matches so far</span><span class="v">{{ j.matchesSoFar }}</span></div>
+        }
+      </div>
+
+      @if (j.datasetsUsed?.length) {
+        <div class="rule"></div>
+        <div>
+          <label class="field-label">Datasets used</label>
+          <div class="pill-wrap">
+            @for (d of j.datasetsUsed; track d) {
+              <span class="pill">{{ d }}</span>
+            }
+          </div>
+        </div>
+      }
+
+      <div class="rule"></div>
+
+      <button type="button" class="outline-btn">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#1c2321" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        Edit Queries
+      </button>
+      <button type="button" class="outline-btn">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#1c2321" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+        Duplicate Job
+      </button>
+    </div>
+
+  </div>
+} @else {
+  <div class="not-found">Job not found.</div>
+}

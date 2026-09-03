@@ -1,0 +1,124 @@
+<div class="topbar">
+  <span class="title">Dataset Catalog</span>
+  <div class="topbar-right">
+    <div class="search">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#8b948e" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search datasets…" [value]="search()" (input)="onSearch($any($event.target).value)" />
+    </div>
+    <button type="button" class="secondary-btn">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#1c2321" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New Dataset Request
+    </button>
+  </div>
+</div>
+
+<div class="body">
+
+  <div class="catalog-col">
+    <div class="toolbar">
+      <span class="count">{{ filteredDatasets().length }} of 128 datasets across 6 workspaces</span>
+    </div>
+
+    <div class="chips">
+      @for (c of categories; track c) {
+        <button type="button" class="chip" [class.active]="categoryFilter() === c" (click)="setCategory(c)">{{ c }}</button>
+      }
+    </div>
+
+    <div class="cards">
+      @for (d of filteredDatasets(); track d.id) {
+        <div class="card" [class.selected]="selectedId() === d.id" (click)="select(d.id)">
+          <div class="card-top">
+            <div class="icon-tile" [style.background]="selectedId() === d.id ? '#ffffff' : 'var(--surface-tint)'">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" [attr.stroke]="selectedId() === d.id ? categoryColor(d.category) : '#5b655f'" stroke-width="1.75" stroke-linejoin="round"><polygon points="12 3 20 9 17 20 7 20 4 9"/></svg>
+            </div>
+            <span class="category-pill" [style.background]="selectedId() === d.id ? '#ffffff' : 'var(--surface-tint)'">{{ d.category }}</span>
+          </div>
+          <div>
+            <div class="card-name">{{ d.name }}</div>
+            <div class="card-desc">{{ d.description }}</div>
+          </div>
+          <div class="card-meta">
+            <span>{{ d.geometryType }}</span><span>{{ d.featureCount | number }} features</span><span>{{ d.updatedLabel }}</span>
+          </div>
+          <div class="card-foot">
+            <span class="view-link">View details &rarr;</span>
+            <div class="add-btn" [style.borderColor]="selectedId() === d.id ? 'var(--accent)' : 'var(--border-strong)'">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" [attr.stroke]="selectedId() === d.id ? 'var(--accent)' : '#5b655f'" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  @if (selectedDataset(); as d) {
+    <div class="detail-panel">
+      <div class="detail-head">
+        <span class="detail-title">{{ d.name }}</span>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#8b948e" stroke-width="1.75" stroke-linecap="round" class="close"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
+      </div>
+
+      <div class="pill-row">
+        <span class="pill">{{ d.geometryType }}</span>
+        <span class="pill">{{ d.category }}</span>
+        <span class="pill accent">Active</span>
+      </div>
+
+      <div class="desc">{{ d.description }}</div>
+
+      <div class="rule"></div>
+
+      <div>
+        <span class="section-label">Schema</span>
+        <div class="schema-list">
+          @for (field of d.schema; track field.name) {
+            <div class="schema-row">
+              <span class="field-name">{{ field.name }}</span>
+              <span class="field-type">{{ field.type }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="rule"></div>
+
+      <div class="info-rows">
+        <div class="info-row">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#8b948e" stroke-width="1.75" stroke-linejoin="round"><polygon points="12 3 21 8 12 13 3 8 12 3"/><polyline points="3 13 12 18 21 13"/></svg>
+          <span class="k">Spatial reference</span>
+          <span class="v">{{ d.spatialReference }}</span>
+        </div>
+        <div class="info-row">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#8b948e" stroke-width="1.75" stroke-linejoin="round"><path d="M12 21s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          <span class="k">Coverage</span>
+          <span class="v">{{ d.coverage }}</span>
+        </div>
+        <div class="info-row">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#8b948e" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg>
+          <span class="k">Source table</span>
+          <span class="v mono">{{ d.sourceTable }}</span>
+        </div>
+        <div class="info-row">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#8b948e" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>
+          <span class="k">Last refreshed</span>
+          <span class="v">{{ d.lastRefreshedLabel }}</span>
+        </div>
+        <div class="info-row">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#8b948e" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6"/></svg>
+          <span class="k">Maintained by</span>
+          <span class="v">{{ d.maintainedBy }}</span>
+        </div>
+      </div>
+
+      <div class="rule"></div>
+
+      <button type="button" class="primary-btn full">
+        Use in Query Builder
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="18" y2="12"/><polyline points="12 6 18 12 12 18"/></svg>
+      </button>
+      <a href="javascript:void(0)" class="metadata-link">View full metadata</a>
+    </div>
+  }
+
+</div>

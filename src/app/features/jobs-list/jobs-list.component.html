@@ -1,0 +1,53 @@
+<div class="topbar">
+  <span class="crumb">Forestry <span class="sep">/</span> <span class="current">Jobs</span></span>
+  <a routerLink="/jobs/new" class="primary-btn">
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    New Job
+  </a>
+</div>
+
+<div class="body">
+
+  <div class="toolbar">
+    <div class="search">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#8b948e" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search jobs…" [value]="search()" (input)="onSearch($any($event.target).value)" />
+    </div>
+    <span class="count">Showing {{ filteredJobs().length }} of {{ statusCounts.running + statusCounts.succeeded + statusCounts.failed + statusCounts.draft }} jobs</span>
+  </div>
+
+  <div class="chips">
+    <button type="button" class="chip" [class.active]="statusFilter() === 'all'" (click)="setStatusFilter('all')">All</button>
+    <button type="button" class="chip" [class.active]="statusFilter() === 'running'" (click)="setStatusFilter('running')">Running &middot; {{ statusCounts.running }}</button>
+    <button type="button" class="chip" [class.active]="statusFilter() === 'succeeded'" (click)="setStatusFilter('succeeded')">Succeeded &middot; {{ statusCounts.succeeded }}</button>
+    <button type="button" class="chip" [class.active]="statusFilter() === 'failed'" (click)="setStatusFilter('failed')">Failed &middot; {{ statusCounts.failed }}</button>
+    <button type="button" class="chip" [class.active]="statusFilter() === 'draft'" (click)="setStatusFilter('draft')">Draft &middot; {{ statusCounts.draft }}</button>
+  </div>
+
+  <div class="table">
+    <div class="row head">
+      <span>Job name</span>
+      <span>Reference</span>
+      <span>Status</span>
+      <span class="right">Queries</span>
+      <span class="right">Datasets</span>
+      <span>Mode</span>
+      <span>Last run</span>
+      <span></span>
+    </div>
+
+    @for (job of filteredJobs(); track job.id) {
+      <a class="row data" [class.highlight]="job.status === 'running'" [routerLink]="['/jobs', job.id]">
+        <span class="name">{{ job.name }}</span>
+        <span class="ref">{{ job.referenceNumber }}</span>
+        <app-status-badge [status]="job.status"></app-status-badge>
+        <span class="right">{{ job.queryCount }}</span>
+        <span class="right">{{ job.datasetCount }}</span>
+        <span class="mode">{{ job.mode }}</span>
+        <span class="last-run">{{ job.lastRunLabel }}</span>
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" [attr.stroke]="job.status === 'running' ? 'var(--accent)' : '#8b948e'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+      </a>
+    }
+  </div>
+
+</div>

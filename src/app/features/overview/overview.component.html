@@ -1,0 +1,76 @@
+<div class="topbar">
+  <span class="crumb">Forestry <span class="sep">/</span> <span class="current">Overview</span></span>
+</div>
+
+<div class="body">
+
+  <!-- STAT TILES -->
+  <div class="stat-grid">
+    <app-stat-tile label="Total jobs" [value]="totalJobs" delta="+1"></app-stat-tile>
+    <app-stat-tile label="Total queries" [value]="totalQueries" delta="+9"></app-stat-tile>
+    <app-stat-tile label="Datasets in use" [value]="datasetsInUse" delta="+3"></app-stat-tile>
+    <app-stat-tile label="Avg queries / job" [value]="avgQueriesPerJob" footnote="across all active jobs"></app-stat-tile>
+    <app-stat-tile label="Total matches found" [value]="totalMatchesFound" delta="+286"></app-stat-tile>
+  </div>
+
+  <!-- JOBS PIE CHARTS -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Jobs by Query Volume</div>
+        <div class="card-sub">Number of queries per job, out of {{ pieQueryVolumeTotal }} total</div>
+      </div>
+      <app-donut-chart [segments]="pieQueryVolume" legendMode="value" [centerValue]="pieQueryVolumeTotal.toString()" centerSubLabel="queries"></app-donut-chart>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Jobs by Dataset Footprint</div>
+        <div class="card-sub">Distinct datasets referenced per job, out of {{ pieDatasetFootprintTotal }} references total</div>
+      </div>
+      <app-donut-chart [segments]="pieDatasetFootprint" legendMode="value" [centerValue]="pieDatasetFootprintTotal.toString()" centerSubLabel="references"></app-donut-chart>
+      <div class="footnote-block">High-volume jobs tend to run many queries against few datasets — dataset variety concentrates in the long tail of smaller jobs.</div>
+    </div>
+  </div>
+
+  <!-- QUERY COVERAGE + QUERY CATEGORY -->
+  <div class="grid-main-side">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Query Coverage by Geometries Scanned</div>
+        <div class="card-sub">Top 8 of {{ totalQueries }} queries in this workspace, by number of candidate geometries checked</div>
+      </div>
+      <app-bar-chart [data]="queryBars" [axisMax]="queryAxisMax" [ticks]="queryTicks" [plotHeight]="170" [axisWidth]="36" [columnWidth]="120" [barWidth]="22"></app-bar-chart>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Queries by Category</div>
+        <div class="card-sub">{{ queryCategoryTotal }} queries, split by dataset category</div>
+      </div>
+      <app-donut-chart [segments]="queryCategory" legendMode="percent" [size]="130" layout="stacked"></app-donut-chart>
+      <div class="footnote-block">A query's category follows the dataset it runs against.</div>
+    </div>
+  </div>
+
+  <!-- DATASET SIZE + DATASET CATEGORY -->
+  <div class="grid-main-side">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Dataset Size by Geometries Scanned</div>
+        <div class="card-sub">Number of geometries per dataset used in this workspace</div>
+      </div>
+      <app-bar-chart [data]="datasetBars" [axisMax]="datasetAxisMax" [ticks]="datasetTicks" [plotHeight]="170" [axisWidth]="40" [columnWidth]="150" [barWidth]="26"></app-bar-chart>
+      <div class="footnote-block tight">LPIS truncated at the axis maximum (450K) — actual count 1.2M geometries.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Datasets by Category</div>
+        <div class="card-sub">{{ datasetCategoryTotal }} datasets in use, by category</div>
+      </div>
+      <app-donut-chart [segments]="datasetCategory" legendMode="percent" [size]="130" layout="stacked"></app-donut-chart>
+    </div>
+  </div>
+
+</div>

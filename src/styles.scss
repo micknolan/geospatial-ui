@@ -1,0 +1,92 @@
+:root {
+  // brand / accent
+  --accent: #2f7a63;
+  --accent-hover: #1f5240;
+  --accent-tint: #eaf3ef;
+
+  // ink
+  --ink: #1c2321;
+  --ink-muted: #5b655f;
+  --ink-faint: #8b948e;
+
+  // surfaces
+  --surface: #ffffff;
+  --surface-app: #f5f6f7;
+  --surface-tint: #eef1ef;
+  --border: #e2e5e3;
+  --border-strong: #dfe3e0;
+  --divider: #eef1ef;
+
+  // header / sidebar (dark)
+  --header-bg: #101a15;
+  --sidebar-bg: #17211d;
+  --sidebar-active-bg: #223a30;
+
+  // status
+  --status-success: var(--accent);
+  --status-warning: #b8862f;
+  --status-danger: #b4483a;
+  --status-running: #2f6690;
+  --status-neutral: #8b948e;
+
+  // categorical palette (fixed order — never cycled)
+  --cat-1: #2a78d6; // Land
+  --cat-2: #eb6834; // Forestry
+  --cat-3: #1baf7a; // Water
+  --cat-4: #eda100; // Boundaries
+  --cat-5: #e87ba4; // Livestock
+  --cat-other: #a9b0ac;
+
+  --font-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--surface-app);
+  color: var(--ink);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+input, textarea, select, button {
+  font-family: inherit;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cfd4d1;
+  border-radius: 4px;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.running-dot {
+  animation: pulse 1.6s ease-in-out infinite;
+}

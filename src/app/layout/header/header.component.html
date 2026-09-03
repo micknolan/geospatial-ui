@@ -1,0 +1,95 @@
+<header class="global-header">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
+      <path d="M12 2C7.5 2 4 5.6 4 10c0 6 8 12 8 12s8-6 8-12c0-4.4-3.5-8-8-8Z" stroke="#dfe8e2" stroke-width="1.6"/>
+      <circle cx="12" cy="10" r="3" stroke="#dfe8e2" stroke-width="1.6"/>
+    </svg>
+    <span class="org">DAFM</span>
+    <span class="divider"></span>
+    <span class="title">Geospatial Analysis</span>
+  </div>
+
+  <div class="utility">
+    <button type="button" class="icon-btn" (click)="toggleTerminology()" aria-label="Terminology">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#ffffff" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.5 2-2.5 3.5"/><line x1="12" y1="17" x2="12" y2="17.01"/></svg>
+    </button>
+    <span class="divider"></span>
+    <div class="profile">
+      <div class="avatar">
+        <span>MN</span>
+      </div>
+      <div class="profile-text">
+        <span class="name">M. Nolan</span>
+        <span class="team">Forestry Team &middot; RHSSO</span>
+      </div>
+    </div>
+
+    @if (showTerminology()) {
+      <div class="terminology-panel">
+        <div class="pointer"></div>
+
+        <div class="panel-head">
+          <div>
+            <span class="panel-title">Terminology</span>
+            <span class="panel-sub">Key terms used across the service</span>
+          </div>
+          <svg class="close" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#8b948e" stroke-width="1.75" stroke-linecap="round" (click)="closeTerminology()"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
+        </div>
+
+        <div class="rule"></div>
+
+        <div class="terms">
+          <div class="term">
+            <div class="term-icon">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#5b655f" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
+            </div>
+            <div>
+              <span class="term-title">Job</span>
+              <span class="term-desc">A container that groups one or more Queries and runs them together as a single batch you can track and review as a whole.</span>
+            </div>
+          </div>
+
+          <div class="term">
+            <div class="term-icon">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#5b655f" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 8 5 12 9 16"/><polyline points="15 8 19 12 15 16"/></svg>
+            </div>
+            <div>
+              <span class="term-title">Query</span>
+              <span class="term-desc">A single spatial comparison &mdash; an operator such as Intersects, Buffer or Nearest applied between your geometry and a Dataset.</span>
+            </div>
+          </div>
+
+          <div class="term">
+            <div class="term-icon">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#5b655f" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg>
+            </div>
+            <div>
+              <span class="term-title">Dataset</span>
+              <span class="term-desc">A registered collection of geometries with a shared schema, sourced from an Oracle table &mdash; similar to what you'd know as a Layer.</span>
+            </div>
+          </div>
+
+          <div class="term">
+            <div class="term-icon">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#5b655f" stroke-width="1.75" stroke-linejoin="round"><polygon points="12 3 20 9 17 20 7 20 4 9"/></svg>
+            </div>
+            <div>
+              <span class="term-title">Geometries</span>
+              <span class="term-desc">The individual spatial records inside a Dataset &mdash; also commonly called Features (e.g. one field parcel, one licence boundary).</span>
+            </div>
+          </div>
+
+          <div class="term">
+            <div class="term-icon">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#5b655f" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 13.41 20.59a2 2 0 0 1-2.82 0L3 13V3h10l7.59 7.59a2 2 0 0 1 0 2.82Z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            </div>
+            <div>
+              <span class="term-title">Category (of dataset)</span>
+              <span class="term-desc">A theme label &mdash; Land, Water, Forestry, Livestock, Boundaries &mdash; used to group and filter Datasets and the Queries run against them.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</header>
