@@ -140,7 +140,7 @@ export class DonutChartComponent {
   readonly gradient = computed(() => {
     const total = this.total() || 1;
     let cumulative = 0;
-    return this._segments()
+    const stops = this._segments()
       .map((s) => {
         const start = (cumulative / total) * 100;
         cumulative += s.value;
@@ -148,6 +148,7 @@ export class DonutChartComponent {
         return `${s.color} ${start.toFixed(2)}% ${end.toFixed(2)}%`;
       })
       .join(', ');
+    return `conic-gradient(${stops})`;
   });
 
   readonly legend = computed<LegendRow[]>(() => {
