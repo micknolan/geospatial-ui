@@ -43,6 +43,11 @@ export const routes: Routes = [
         title: 'Queries · Geospatial Analysis',
       },
       {
+        path: 'queries/:id',
+        loadComponent: () => import('./features/query-detail/query-detail.component').then((m) => m.QueryDetailComponent),
+        title: 'Query Detail · Geospatial Analysis',
+      },
+      {
         path: 'catalog',
         loadComponent: () => import('./features/catalog/catalog.component').then((m) => m.CatalogComponent),
         title: 'Dataset Catalog · Geospatial Analysis',

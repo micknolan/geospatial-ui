@@ -1,5 +1,6 @@
 import { Component, computed, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { QueryService } from '../../core/services/query.service';
 import { QuerySummary } from '../../core/models/query.model';
 import { CATEGORY_ORDER, categoryColor } from '../../core/models/category';
@@ -8,7 +9,7 @@ import { StatusBadgeComponent } from '../../shared/components/status-badge/statu
 
 @Component({
   selector: 'app-query-list',
-  imports: [CategoryDotComponent, StatusBadgeComponent, DecimalPipe],
+  imports: [CategoryDotComponent, StatusBadgeComponent, DecimalPipe, RouterLink],
   templateUrl: './query-list.component.html',
   styleUrl: './query-list.component.scss',
 })
