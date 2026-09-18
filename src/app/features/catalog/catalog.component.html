@@ -17,6 +17,10 @@
   <div class="catalog-col">
     <div class="toolbar">
       <span class="count">{{ filteredDatasets().length }} of 128 datasets across 6 workspaces</span>
+      <span class="filter-indicator">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#8b948e" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="1.8" fill="#8b948e" stroke="none"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="15" cy="12" r="1.8" fill="#8b948e" stroke="none"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="7" cy="18" r="1.8" fill="#8b948e" stroke="none"/></svg>
+        Filter
+      </span>
     </div>
 
     <div class="chips">
@@ -113,10 +117,10 @@
 
       <div class="rule"></div>
 
-      <button type="button" class="primary-btn full">
+      <a routerLink="/queries/new" class="primary-btn full">
         Use in Query Builder
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="18" y2="12"/><polyline points="12 6 18 12 12 18"/></svg>
-      </button>
+      </a>
       <a href="javascript:void(0)" class="metadata-link">View full metadata</a>
     </div>
   }

@@ -1,12 +1,13 @@
 import { Component, computed, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { DatasetService } from '../../core/services/dataset.service';
 import { Dataset } from '../../core/models/dataset.model';
 import { CATEGORY_ORDER, categoryColor } from '../../core/models/category';
 
 @Component({
   selector: 'app-catalog',
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, RouterLink],
   templateUrl: './catalog.component.html',
   styleUrl: './catalog.component.scss',
 })
