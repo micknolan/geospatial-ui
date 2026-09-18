@@ -1,0 +1,102 @@
+<div class="login-page">
+
+  <header class="global-header">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
+        <path d="M12 2C7.5 2 4 5.6 4 10c0 6 8 12 8 12s8-6 8-12c0-4.4-3.5-8-8-8Z" stroke="#dfe8e2" stroke-width="1.6"/>
+        <circle cx="12" cy="10" r="3" stroke="#dfe8e2" stroke-width="1.6"/>
+      </svg>
+      <span class="org">DAFM</span>
+      <span class="divider"></span>
+      <span class="title">Geospatial Analysis</span>
+    </div>
+
+    <div class="utility">
+      <button type="button" class="icon-btn" aria-label="Help">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#ffffff" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.5 2-2.5 3.5"/><line x1="12" y1="17" x2="12" y2="17.01"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="login-content">
+    <form class="login-card" (ngSubmit)="submit()" novalidate>
+
+      <div class="icon-circle">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#5b655f" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      </div>
+
+      <h1>Sign in to Geospatial Analysis</h1>
+      <p class="subtitle">Enter your DAFM network credentials to continue.</p>
+
+      @if (errorMessage()) {
+        <div class="error-banner" role="alert">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#b4483a" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <div class="field">
+        <label for="username">Username</label>
+        <div class="input-box">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#8b948e" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            autocomplete="username"
+            placeholder="m.nolan or m.nolan@agriculture.gov.ie"
+            [ngModel]="username()"
+            (ngModelChange)="username.set($event)"
+          />
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-head">
+          <label for="password">Password</label>
+          <a href="javascript:void(0)">Forgot your password?</a>
+        </div>
+        <div class="input-box">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#8b948e" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          <input
+            id="password"
+            name="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            autocomplete="current-password"
+            placeholder="Password"
+            [ngModel]="password()"
+            (ngModelChange)="password.set($event)"
+          />
+          <svg
+            class="toggle"
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="#8b948e"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            role="button"
+            [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+            (click)="togglePasswordVisibility()"
+          >
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn" [disabled]="submitting()">
+        {{ submitting() ? 'Signing in…' : 'Sign in' }}
+      </button>
+
+      <div class="rule"></div>
+
+      <p class="footnote">
+        Your credentials are verified against the DAFM directory (LDAP) via RHSSO. For account issues, contact the <a href="javascript:void(0)">IT Service Desk</a>.
+      </p>
+
+    </form>
+  </div>
+
+</div>

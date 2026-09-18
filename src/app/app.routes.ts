@@ -3,6 +3,11 @@ import { ShellComponent } from './layout/shell/shell.component';
 
 export const routes: Routes = [
   {
+    path: 'login',
+    loadComponent: () => import('./features/login/login.component').then((m) => m.LoginComponent),
+    title: 'Sign In · Geospatial Analysis',
+  },
+  {
     path: '',
     component: ShellComponent,
     children: [
