@@ -5,11 +5,10 @@ import { QueryService } from '../../core/services/query.service';
 import { QuerySummary } from '../../core/models/query.model';
 import { CATEGORY_ORDER, categoryColor } from '../../core/models/category';
 import { CategoryDotComponent } from '../../shared/components/category-dot/category-dot.component';
-import { StatusBadgeComponent } from '../../shared/components/status-badge/status-badge.component';
 
 @Component({
   selector: 'app-query-list',
-  imports: [CategoryDotComponent, StatusBadgeComponent, DecimalPipe, RouterLink],
+  imports: [CategoryDotComponent, DecimalPipe, RouterLink],
   templateUrl: './query-list.component.html',
   styleUrl: './query-list.component.scss',
 })

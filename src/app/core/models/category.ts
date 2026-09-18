@@ -4,7 +4,7 @@
  * badge and dot across the app so "Land" (for example) is always the same
  * color whether it's counting datasets or queries.
  */
-export const CATEGORY_ORDER = ['Land', 'Forestry', 'Water', 'Boundaries', 'Livestock'] as const;
+export const CATEGORY_ORDER = ['Land', 'Forestry', 'Water', 'Livestock', 'Boundaries'] as const;
 
 export type Category = (typeof CATEGORY_ORDER)[number];
 

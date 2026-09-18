@@ -4,11 +4,10 @@ import { DecimalPipe } from '@angular/common';
 import { QueryService } from '../../core/services/query.service';
 import { QuerySummary } from '../../core/models/query.model';
 import { categoryColor } from '../../core/models/category';
-import { StatusBadgeComponent } from '../../shared/components/status-badge/status-badge.component';
 
 @Component({
   selector: 'app-query-detail',
-  imports: [RouterLink, StatusBadgeComponent, DecimalPipe],
+  imports: [RouterLink, DecimalPipe],
   templateUrl: './query-detail.component.html',
   styleUrl: './query-detail.component.scss',
 })
