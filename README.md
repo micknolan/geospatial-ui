@@ -1,6 +1,6 @@
-# DAFM Geospatial Analysis — UI
+# Geospatial Analysis — UI
 
-An Angular front end for the DAFM Geospatial Analysis service: a Quarkus/Java
+An Angular front end for the Geospatial Analysis service: a Quarkus/Java
 backend that runs spatial queries (Oracle Spatial SQL) against DAFM's dataset
 library, organised into Jobs, executed via REST or JMS, and secured per
 workspace through RHSSO.
