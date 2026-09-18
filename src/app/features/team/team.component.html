@@ -1,0 +1,83 @@
+@if (workspace(); as ws) {
+  <div class="topbar">
+    <div class="crumb">
+      <span>{{ ws.teamName }}</span><span class="sep">/</span><span class="current">Team</span>
+    </div>
+    <button type="button" class="primary-btn">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Invite member
+    </button>
+  </div>
+
+  <div class="body">
+
+    <!-- Workspace context strip -->
+    <div class="workspace-strip">
+      <div class="workspace-icon">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#5b655f" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3Z"/></svg>
+      </div>
+      <div class="workspace-text">
+        <span class="workspace-label">Workspace</span>
+        <span class="workspace-name">{{ ws.name }}<span class="workspace-id">&nbsp;&nbsp;&middot;&nbsp;{{ ws.id }}</span></span>
+      </div>
+      <a routerLink="/workspace" class="workspace-link">
+        Workspace settings
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </a>
+    </div>
+
+    <!-- Role info strip -->
+    <div class="role-strip">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#5b655f" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.5 2-2.5 3.5"/><line x1="12" y1="17" x2="12" y2="17.01"/></svg>
+      <span>Team leads can invite new members and manage workspace access. Standard members have the same rights to create and edit Jobs and Queries as Team leads.</span>
+    </div>
+
+    <div class="toolbar">
+      <div class="search">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#8b948e" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search team members…" [value]="search()" (input)="onSearch($any($event.target).value)" />
+      </div>
+      <span class="count">{{ members().length }} members</span>
+    </div>
+
+    <div class="table">
+      <div class="row head">
+        <span>Member</span>
+        <span>Role</span>
+        <span>Joined</span>
+        <span></span>
+      </div>
+
+      @for (member of filteredMembers(); track member.id) {
+        <div class="row data" [class.highlight]="member.isCurrentUser">
+          <div class="member">
+            <div class="avatar" [style.background]="member.avatarColor"><span>{{ member.initials }}</span></div>
+            <div class="member-text">
+              <div class="member-name-row">
+                <span class="member-name">{{ member.name }}</span>
+                @if (member.isCurrentUser) {
+                  <span class="you-pill">You</span>
+                }
+              </div>
+              <span class="member-email">{{ member.email }}</span>
+            </div>
+          </div>
+          <span class="role-pill" [class.lead]="member.role === 'Team lead'">{{ member.role }}</span>
+          @if (member.invitePending) {
+            <span class="joined pending">{{ member.joinedLabel }}</span>
+          } @else {
+            <span class="joined">{{ member.joinedLabel }}</span>
+          }
+          @if (!member.isCurrentUser) {
+            <svg class="menu" viewBox="0 0 24 24" width="15" height="15" fill="#8b948e"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+          } @else {
+            <span></span>
+          }
+        </div>
+      } @empty {
+        <div class="empty-row">No team members match your search.</div>
+      }
+    </div>
+
+  </div>
+}

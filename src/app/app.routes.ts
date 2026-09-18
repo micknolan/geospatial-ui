@@ -47,6 +47,17 @@ export const routes: Routes = [
         loadComponent: () => import('./features/catalog/catalog.component').then((m) => m.CatalogComponent),
         title: 'Dataset Catalog · Geospatial Analysis',
       },
+      {
+        path: 'workspace',
+        loadComponent: () =>
+          import('./features/workspace-access/workspace-access.component').then((m) => m.WorkspaceAccessComponent),
+        title: 'Workspaces & Access · Geospatial Analysis',
+      },
+      {
+        path: 'team',
+        loadComponent: () => import('./features/team/team.component').then((m) => m.TeamComponent),
+        title: 'Team · Geospatial Analysis',
+      },
     ],
   },
   { path: '**', redirectTo: 'overview' },
