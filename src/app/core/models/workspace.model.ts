@@ -17,7 +17,6 @@ export interface AccessRequest {
   id: string;
   name: string;
   initials: string;
-  avatarColor: string;
   requestedLabel: string;
   ldapUsername: string;
 }

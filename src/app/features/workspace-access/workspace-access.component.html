@@ -74,7 +74,7 @@
         <div class="request-list">
           @for (request of accessRequests(); track request.id) {
             <div class="request-row">
-              <div class="request-avatar" [style.background]="request.avatarColor">
+              <div class="request-avatar">
                 <span>{{ request.initials }}</span>
               </div>
               <div class="request-text">

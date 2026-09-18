@@ -246,6 +246,7 @@
   width: 30px;
   height: 30px;
   border-radius: 999px;
+  background: var(--surface-tint);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -253,7 +254,7 @@
   span {
     font-size: 10.5px;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--ink-muted);
   }
 }
 

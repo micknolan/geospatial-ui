@@ -17,8 +17,8 @@ const RHSSO_CLIENTS: RhssoClient[] = [
 ];
 
 const ACCESS_REQUESTS: AccessRequest[] = [
-  { id: 'ekelleher', name: 'E. Kelleher', initials: 'EK', avatarColor: '#5b655f', requestedLabel: 'Requested to join · 2 days ago', ldapUsername: 'ekelleher' },
-  { id: 'tcondon', name: 'T. Condon', initials: 'TC', avatarColor: '#5b655f', requestedLabel: 'Requested to join · 5 days ago', ldapUsername: 'tcondon' },
+  { id: 'ekelleher', name: 'E. Kelleher', initials: 'EK', requestedLabel: 'Requested to join · 2 days ago', ldapUsername: 'ekelleher' },
+  { id: 'tcondon', name: 'T. Condon', initials: 'TC', requestedLabel: 'Requested to join · 5 days ago', ldapUsername: 'tcondon' },
 ];
 
 const TEAM_MEMBERS: TeamMember[] = [
