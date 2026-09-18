@@ -43,6 +43,16 @@ export const routes: Routes = [
         title: 'Queries · Geospatial Analysis',
       },
       {
+        path: 'queries/new',
+        loadComponent: () => import('./features/query-builder/query-builder.component').then((m) => m.QueryBuilderComponent),
+        title: 'New Query · Geospatial Analysis',
+      },
+      {
+        path: 'queries/:id/edit',
+        loadComponent: () => import('./features/query-builder/query-builder.component').then((m) => m.QueryBuilderComponent),
+        title: 'Query Builder · Geospatial Analysis',
+      },
+      {
         path: 'queries/:id',
         loadComponent: () => import('./features/query-detail/query-detail.component').then((m) => m.QueryDetailComponent),
         title: 'Query Detail · Geospatial Analysis',

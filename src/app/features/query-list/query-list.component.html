@@ -1,9 +1,9 @@
 <div class="topbar">
   <span class="crumb">Forestry <span class="sep">/</span> <span class="current">Queries</span></span>
-  <button type="button" class="primary-btn">
+  <a routerLink="/queries/new" class="primary-btn">
     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     New Query
-  </button>
+  </a>
 </div>
 
 <div class="body">
@@ -99,10 +99,10 @@
 
       <div class="rule"></div>
 
-      <button type="button" class="primary-btn full">
+      <a [routerLink]="['/queries', q.id, 'edit']" class="primary-btn full">
         View in Query Builder
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
-      </button>
+      </a>
     </div>
   }
 
