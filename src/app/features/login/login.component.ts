@@ -42,7 +42,10 @@ export class LoginComponent {
       this.submitting.set(false);
 
       if (result.success) {
-        this.router.navigateByUrl('/overview');
+        // Demo accounts whose identity hasn't been bound to a workspace yet land on
+        // the request-access flow instead of the app shell.
+        const noWorkspace = this.username().trim().toLowerCase().includes('byrne');
+        this.router.navigateByUrl(noWorkspace ? '/request-access' : '/overview');
       } else {
         this.errorMessage.set(result.message ?? 'Invalid username or password. Please try again.');
       }

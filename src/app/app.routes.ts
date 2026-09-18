@@ -8,6 +8,12 @@ export const routes: Routes = [
     title: 'Sign In · Geospatial Analysis',
   },
   {
+    path: 'request-access',
+    loadComponent: () =>
+      import('./features/request-access/request-access.component').then((m) => m.RequestAccessComponent),
+    title: 'Request Access · Geospatial Analysis',
+  },
+  {
     path: '',
     component: ShellComponent,
     children: [
