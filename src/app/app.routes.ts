@@ -17,11 +17,29 @@ export const routes: Routes = [
     path: '',
     component: ShellComponent,
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'overview' },
+      { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       {
-        path: 'overview',
+        path: 'dashboard',
         loadComponent: () => import('./features/overview/overview.component').then((m) => m.OverviewComponent),
-        title: 'Overview · Geospatial Analysis',
+        title: 'Dashboard · Geospatial Analysis',
+      },
+      // Old URL, kept so existing bookmarks and links keep working.
+      { path: 'overview', pathMatch: 'full', redirectTo: 'dashboard' },
+      {
+        // The result modal is a child route so it is deep-linkable and the browser Back button closes it.
+        path: 'execution-history',
+        loadComponent: () =>
+          import('./features/execution-history/execution-history.component').then((m) => m.ExecutionHistoryComponent),
+        title: 'Execution History · Geospatial Analysis',
+        children: [
+          {
+            path: ':reference',
+            loadComponent: () =>
+              import('./features/execution-history/execution-result-modal.component').then(
+                (m) => m.ExecutionResultModalComponent,
+              ),
+          },
+        ],
       },
       {
         path: 'jobs',
@@ -81,5 +99,5 @@ export const routes: Routes = [
       },
     ],
   },
-  { path: '**', redirectTo: 'overview' },
+  { path: '**', redirectTo: 'dashboard' },
 ];

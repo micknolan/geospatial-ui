@@ -1,0 +1,187 @@
+<div class="topbar">
+  <span class="crumb"><span>Forestry</span><span class="sep">/</span><span>Overview</span><span class="sep">/</span><span class="current">Execution History</span></span>
+
+  <div class="range" role="group" aria-label="Date range">
+    @for (r of ranges; track r) {
+      <button type="button" class="range-btn" [class.active]="range() === r" [attr.aria-pressed]="range() === r" (click)="setRange(r)">
+        {{ r }} days
+      </button>
+    }
+  </div>
+</div>
+
+@if (data(); as d) {
+  <div class="body">
+
+    <p class="scope">{{ d.rangeLabel }} · Forestry workspace · completed runs only · compared with the previous {{ d.range }} days</p>
+
+    <!-- KPI TILES -->
+    <div class="kpi-grid">
+      @for (k of kpis(); track k.label) {
+        <div class="kpi">
+          <span class="kpi-label">{{ k.label }}</span>
+          <span class="kpi-value">{{ k.value }}</span>
+          <span class="kpi-note"><span [class]="'delta ' + k.tone">{{ k.delta }}</span> · {{ k.note }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- ROW 1: volume + success -->
+    <div class="grid-2">
+      <section class="card">
+        <header class="card-head">
+          <div>
+            <h2 class="card-title">Executions per day</h2>
+            <p class="card-sub">Jobs and queries have separate scales; jobs fan out into many queries.</p>
+          </div>
+          <div class="legend">
+            <span><i class="sw" [style.background]="colors.jobs"></i>Jobs</span>
+            <span><i class="sw" [style.background]="colors.queries"></i>Queries</span>
+          </div>
+        </header>
+        <app-line-chart
+          [series]="jobsSeries()" [labels]="labels()" [yMax]="jobsScale().max" [yTicks]="jobsScale().ticks"
+          [yFormat]="fmtInt" [height]="100" ariaLabel="Job executions per day" />
+        <app-line-chart
+          [series]="queriesSeries()" [labels]="labels()" [yMax]="queriesScale().max" [yTicks]="queriesScale().ticks"
+          [yFormat]="fmtInt" [height]="110" ariaLabel="Query executions per day" />
+      </section>
+
+      <section class="card">
+        <header class="card-head">
+          <div>
+            <h2 class="card-title">Success rate</h2>
+            <p class="card-sub">
+              Share of executions that completed without error.
+              @if (daysBelowTarget() > 0) {
+                {{ daysBelowTarget() }} {{ daysBelowTarget() === 1 ? 'day' : 'days' }} fell below the 95% target.
+              } @else {
+                Every day met the 95% target.
+              }
+            </p>
+          </div>
+          <div class="legend">
+            <span><i class="sw" [style.background]="colors.jobs"></i>Success rate</span>
+            <span><i class="sw dashed"></i>Target</span>
+          </div>
+        </header>
+        <app-line-chart
+          [series]="successSeries()" [labels]="labels()" [yMin]="90" [yMax]="100" [yTicks]="[90, 95, 100]"
+          [yFormat]="fmtPct" [valueFormat]="fmtPctPrecise" [height]="220"
+          [target]="{ value: 95, label: 'Target' }" [highlights]="successFlags()"
+          ariaLabel="Daily success rate against the 95% target" />
+      </section>
+    </div>
+
+    <!-- ROW 2: duration + channel -->
+    <div class="grid-2">
+      <section class="card">
+        <header class="card-head">
+          <div>
+            <h2 class="card-title">Job duration</h2>
+            <p class="card-sub">Seconds per job, average and 95th percentile.</p>
+          </div>
+          <div class="legend">
+            <span><i class="sw" [style.background]="colors.jobs"></i>Average</span>
+            <span><i class="sw" [style.background]="colors.queries"></i>p95</span>
+          </div>
+        </header>
+        <app-line-chart
+          [series]="durationSeries()" [labels]="labels()" [yMax]="durationScale().max" [yTicks]="durationScale().ticks"
+          [yFormat]="fmtSec" [valueFormat]="fmtSecPrecise" [height]="180" ariaLabel="Average and p95 job duration in seconds" />
+      </section>
+
+      <section class="card">
+        <header class="card-head">
+          <div>
+            <h2 class="card-title">Trigger channel</h2>
+            <p class="card-sub">Executions per day by how they were started. JMS is the recommended channel.</p>
+          </div>
+          <div class="legend">
+            <span><i class="sw" [style.background]="colors.jobs"></i>JMS · {{ channelShare().jms }}%</span>
+            <span><i class="sw" [style.background]="colors.queries"></i>REST · {{ channelShare().rest }}%</span>
+          </div>
+        </header>
+        <app-line-chart
+          [series]="channelSeries()" [labels]="labels()" [yMax]="channelScale().max" [yTicks]="channelScale().ticks"
+          [yFormat]="fmtInt" [height]="180" ariaLabel="Executions per day by channel, JMS and REST" />
+      </section>
+    </div>
+
+    <!-- ROW 3: busiest + stale jobs -->
+    <div class="grid-jobs">
+      <section class="card">
+        <header class="card-head">
+          <div>
+            <h2 class="card-title">Busiest jobs</h2>
+            <p class="card-sub">Runs in the last {{ d.range }} days. The top {{ d.busiestJobs.length }} account for {{ busiestShare() }}% of all job runs.</p>
+          </div>
+          <div class="busy-cols"><span>Runs</span><span>Success</span></div>
+        </header>
+        <div class="busy">
+          @for (j of d.busiestJobs; track j.id) {
+            <div class="busy-row">
+              <a [routerLink]="['/jobs', j.id]" class="busy-name">{{ j.name }}</a>
+              <div class="bar-track"><div class="bar-fill" [style.width.%]="(j.runs / busiestMax()) * 100"></div></div>
+              <span class="busy-runs">{{ j.runs | number }}</span>
+              <span class="busy-ok">{{ j.successRate }}% ok</span>
+            </div>
+          }
+        </div>
+      </section>
+
+      <section class="card">
+        <header class="card-head">
+          <div>
+            <h2 class="card-title">Stale jobs</h2>
+            <p class="card-sub">Jobs with no runs in the last {{ d.range }} days.</p>
+          </div>
+        </header>
+        <div class="stale-count"><span class="stale-num">{{ d.staleJobs.length }}</span><span class="stale-of">of {{ d.totalJobCount }} jobs</span></div>
+        @for (j of d.staleJobs; track j.id) {
+          <a class="stale-row" [routerLink]="['/jobs', j.id]">
+            <span class="stale-text">
+              <span class="stale-name">{{ j.name }}</span>
+              <span class="stale-detail">{{ j.detail }}</span>
+            </span>
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#8b948e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+          </a>
+        }
+        <p class="stale-foot">The other {{ d.totalJobCount - d.staleJobs.length }} jobs have all run in this period.</p>
+      </section>
+    </div>
+
+    <!-- RECENT EXECUTIONS -->
+    <section class="table-card">
+      <header class="table-head">
+        <h2 class="card-title">Recent executions</h2>
+        <p class="card-sub">Latest runs in this workspace. Select a row to view its result.</p>
+      </header>
+
+      <div class="row head">
+        <span>Name</span><span>Reference</span><span>Channel</span><span>Started</span><span class="right">Duration</span><span>Status</span><span></span>
+      </div>
+
+      @for (e of d.recent; track e.reference) {
+        <a class="row data" [routerLink]="['/execution-history', e.reference]">
+          <span class="name-cell">
+            <span class="kind" [class.query]="e.kind === 'query'">{{ e.kind === 'job' ? 'Job' : 'Query' }}</span>
+            <span class="name">{{ e.name }}</span>
+          </span>
+          <span class="ref" [title]="e.reference">{{ e.reference }}</span>
+          <span class="muted">{{ e.channel }}</span>
+          <span class="muted">{{ e.startedLabel }}</span>
+          <span class="right num">{{ formatDuration(e.durationMs) }}</span>
+          <app-status-badge [status]="e.status"></app-status-badge>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#8b948e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </a>
+      }
+
+      <footer class="table-foot">Showing {{ d.recent.length }} of {{ d.recentTotal | number }} executions</footer>
+    </section>
+
+  </div>
+}
+
+<!-- The result modal renders here (child route: /execution-history/:reference) -->
+<router-outlet />

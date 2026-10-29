@@ -30,10 +30,30 @@
   color: #ffffff;
 }
 
-.nav {
+// A headed group of links. Every group after the first is separated by a thin rule.
+.group {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
   gap: 2px;
+
+  &.group-first {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+}
+
+// Static heading: not a link, no icon, no chevron.
+.group-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #8f9b94;
+  text-transform: uppercase;
+  padding: 0 10px 6px;
 }
 
 .nav-item {
@@ -65,22 +85,4 @@
       color: #cdd6d0;
     }
   }
-}
-
-.admin {
-  margin-top: 18px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.admin-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  color: #6e7a72;
-  text-transform: uppercase;
-  padding: 0 10px 6px;
 }

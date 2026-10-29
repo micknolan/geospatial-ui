@@ -4,11 +4,20 @@
     <span class="workspace-name">Forestry</span>
   </div>
 
-  <nav class="nav">
-    <a routerLink="/overview" routerLinkActive="active" class="nav-item">
+  <nav class="group group-first" aria-label="Overview">
+    <span class="group-label">Overview</span>
+    <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-      <span>Overview</span>
+      <span>Dashboard</span>
     </a>
+    <a routerLink="/execution-history" routerLinkActive="active" class="nav-item">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span>Execution History</span>
+    </a>
+  </nav>
+
+  <nav class="group" aria-label="Analysis">
+    <span class="group-label">Analysis</span>
     <a routerLink="/jobs" routerLinkActive="active" class="nav-item">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
       <span>Jobs</span>
@@ -23,8 +32,8 @@
     </a>
   </nav>
 
-  <div class="admin">
-    <span class="admin-label">Administration</span>
+  <nav class="group" aria-label="Administration">
+    <span class="group-label">Administration</span>
     <a routerLink="/workspace" routerLinkActive="active" class="nav-item">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3Z"/></svg>
       <span>Workspaces &amp; Access</span>
@@ -33,5 +42,5 @@
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       <span>Team</span>
     </a>
-  </div>
+  </nav>
 </aside>

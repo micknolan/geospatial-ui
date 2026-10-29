@@ -1,0 +1,244 @@
+<div class="overlay">
+  <div class="backdrop" (click)="close()"></div>
+
+  <div #dialog class="dialog" role="dialog" aria-modal="true" aria-labelledby="result-title" tabindex="-1">
+
+    @if (result() === undefined) {
+      <div class="state">Loading result…</div>
+    } @else if (result() === null) {
+      <div class="state">
+        <p>This execution result could not be found.</p>
+        <button type="button" class="btn" (click)="close()">Back to Execution History</button>
+      </div>
+    } @else {
+      @let r = result()!;
+
+      <!-- HEADER -->
+      <header class="head">
+        <div class="head-main">
+          <div class="head-title">
+            <h2 id="result-title">{{ title() }}</h2>
+            <span class="kind">{{ kind() }}</span>
+            <app-status-badge [status]="failedCount() ? 'failed' : 'succeeded'"></app-status-badge>
+          </div>
+          <div class="head-meta">
+            <span>Reference</span>
+            <code class="ref">{{ r.clientReference }}</code>
+            <span class="dot">·</span>
+            <span>Ran {{ formatRunDate(r.runDate) }}</span>
+            <span class="dot">·</span>
+            <span>{{ inputCount() }} input {{ inputCount() === 1 ? 'geometry' : 'geometries' }} (ID {{ r.inputSDOGeomIds }})</span>
+          </div>
+        </div>
+        <div class="head-actions">
+          <button type="button" class="btn" (click)="copyJson()">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            {{ copied() ? 'Copied' : 'Copy JSON' }}
+          </button>
+          <button type="button" class="btn" (click)="downloadJson()">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download <span class="faint">{{ sizeLabel() }}</span>
+          </button>
+          <button type="button" class="icon-btn" aria-label="Close" (click)="close()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- SUMMARY STRIP -->
+      <div class="summary">
+        <div class="stat"><span class="stat-label">Total time</span><span class="stat-value">{{ formatDuration(r.executeTime) }}</span><span class="stat-sub">Whole {{ kind().toLowerCase() }} run</span></div>
+        <div class="stat">
+          <span class="stat-label">Queries</span><span class="stat-value">{{ r.data.length }}</span>
+          <span class="stat-sub">{{ failedCount() ? failedCount() + ' failed' : 'All succeeded' }}</span>
+        </div>
+        <div class="stat"><span class="stat-label">Interactions</span><span class="stat-value">{{ totalInteractions() | number }}</span><span class="stat-sub">Across all queries</span></div>
+        <div class="stat">
+          <span class="stat-label">Largest result</span>
+          @if (largest(); as big) {
+            <span class="stat-value small">{{ big.name }}</span>
+            <span class="stat-sub">{{ big.count | number }} interactions, {{ big.timeShare }}% of query time</span>
+          }
+        </div>
+      </div>
+
+      <!-- TABS -->
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" class="tab" [class.active]="tab() === 'results'" [attr.aria-selected]="tab() === 'results'" (click)="tab.set('results')">Results</button>
+        <button type="button" role="tab" class="tab" [class.active]="tab() === 'raw'" [attr.aria-selected]="tab() === 'raw'" (click)="tab.set('raw')">Raw JSON</button>
+      </div>
+
+      @if (tab() === 'results') {
+        <div class="content">
+
+          <!-- QUERY RAIL -->
+          <nav class="rail" aria-label="Queries in this execution">
+            <span class="rail-title">Queries in this {{ kind().toLowerCase() }} ({{ r.data.length }})</span>
+            @for (q of r.data; track q.spatialQuery.id; let i = $index) {
+              <button type="button" class="rail-item" [class.active]="i === selectedIndex()" (click)="selectQuery(i)">
+                <span class="rail-top">
+                  <span class="rail-name">{{ cleanName(q) }}</span>
+                  <span class="rail-dot" [class.failed]="q.status !== 'SUCCESS'"></span>
+                </span>
+                <span class="rail-op">{{ q.spatialQuery.operator }} · {{ q.spatialQuery.relationship }}</span>
+                <span class="rail-stats">
+                  @if (q.status === 'SUCCESS') {
+                    <span><b>{{ q.interactions.length | number }}</b>&nbsp;<span class="faint">interactions</span></span>
+                  } @else {
+                    <span class="failed-text">Failed</span>
+                  }
+                  <span class="faint">{{ formatDuration(q.executeTime) }}</span>
+                </span>
+                <span class="rail-bar"><span [style.width.%]="(q.executeTime / totalQueryTime()) * 100"></span></span>
+              </button>
+            }
+            <span class="rail-foot">Bar shows each query's share of total query time.</span>
+          </nav>
+
+          <!-- SELECTED QUERY -->
+          <section class="detail-pane">
+            @if (query(); as q) {
+              <div class="q-head">
+                <div class="q-title">
+                  <h3>{{ cleanName(q) }}</h3>
+                  <p>{{ q.spatialQuery.description }}</p>
+                </div>
+                <div class="q-stats">
+                  <div><span>Interactions</span><b>{{ q.interactions.length | number }}</b></div>
+                  <div><span>Total intersection area</span><b>{{ q.totalIntersectionArea | number: '1.0-2' }}</b></div>
+                  <div><span>Query time</span><b>{{ formatDuration(q.executeTime) }}</b></div>
+                </div>
+              </div>
+
+              <dl class="q-def">
+                <div><dt>Dataset</dt><dd>{{ q.spatialQuery.datasetDetails.name }}</dd></div>
+                <div><dt>Operator</dt><dd class="mono">{{ q.spatialQuery.operator }}</dd></div>
+                <div><dt>Relationship</dt><dd class="mono">{{ q.spatialQuery.relationship }}</dd></div>
+                <div><dt>Distance / clause</dt><dd>{{ q.spatialQuery.distance ?? q.spatialQuery.clause ?? '—' }}</dd></div>
+                <div><dt>Sensitive data</dt><dd>{{ q.spatialQuery.sensitiveData ? 'Yes' : 'No' }}</dd></div>
+              </dl>
+
+              @if (q.status !== 'SUCCESS') {
+                <div class="error" role="alert">
+                  <b>This query failed</b>
+                  <span>{{ q.errorMessage ?? 'No error message was recorded.' }}</span>
+                </div>
+              } @else if (q.interactions.length === 0) {
+                <div class="empty">No interactions. None of the dataset's features have a spatial relationship with the input geometry.</div>
+              } @else {
+
+                <!-- RELATIONSHIP SPLIT -->
+                <div class="split">
+                  <div class="split-bar" aria-hidden="true">
+                    @for (rel of relationshipCounts(); track rel.name) {
+                      <span [class]="relClass(rel.name)" [style.width.%]="(rel.count / q.interactions.length) * 100"></span>
+                    }
+                  </div>
+                  <div class="chips">
+                    <span class="chips-label">Relationship</span>
+                    <button type="button" class="chip" [class.active]="relationship() === null" (click)="setRelationship(null)">All {{ q.interactions.length | number }}</button>
+                    @for (rel of relationshipCounts(); track rel.name) {
+                      <button type="button" class="chip" [class.active]="relationship() === rel.name" (click)="setRelationship(rel.name)">
+                        <i [class]="'swatch ' + relClass(rel.name)"></i>{{ rel.name }}
+                        <b>{{ rel.count | number }}</b>
+                        <span class="faint">{{ (rel.count / q.interactions.length) * 100 | number: '1.1-1' }}%</span>
+                      </button>
+                    }
+                  </div>
+                </div>
+
+                <!-- TOOLBAR -->
+                <div class="toolbar">
+                  <label class="search">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#8b948e" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" placeholder="Filter these results…" [value]="filterText()" (input)="onFilter($any($event.target).value)" />
+                  </label>
+
+                  <div class="columns">
+                    <button type="button" class="btn" [attr.aria-expanded]="columnsOpen()" (click)="columnsOpen.set(!columnsOpen())">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+                      Columns <span class="faint">{{ columns().length }} of {{ attributeKeys().length }}</span>
+                    </button>
+                    @if (columnsOpen()) {
+                      <div class="popover" role="menu">
+                        @for (key of attributeKeys(); track key) {
+                          <label class="check">
+                            <input type="checkbox" [checked]="columns().includes(key)" (change)="toggleColumn(key)" />
+                            <span class="mono">{{ key }}</span>
+                          </label>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <!-- TABLE -->
+                <div class="grid">
+                  <div class="tr head" [style.grid-template-columns]="gridTemplate()">
+                    <span></span><span>Geom ID</span><span>Relationship</span><span class="right">Area</span>
+                    @for (c of columns(); track c) { <span class="col-head" [title]="c">{{ c }}</span> }
+                  </div>
+
+                  @for (x of pageRows(); track $index) {
+                    <button type="button" class="tr data" [class.open]="expanded().has(x)" [attr.aria-expanded]="expanded().has(x)"
+                            [style.grid-template-columns]="gridTemplate()" (click)="toggleRow(x)">
+                      <svg class="chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+                      <span class="mono">{{ x.datasetGeometryId }}</span>
+                      <span><span [class]="'rel ' + relClass(x.relationship)">{{ x.relationship }}</span></span>
+                      <span class="right num">{{ x.intersectArea | number: '1.4-4' }}</span>
+                      @for (c of columns(); track c) { <span class="cell">{{ display(x.layerAttributes[c]) }}</span> }
+                    </button>
+
+                    @if (expanded().has(x)) {
+                      <div class="expanded">
+                        <div class="kv">
+                          @for (a of detail(x); track a.key) {
+                            <div [class.wide]="a.wide || a.link">
+                              <span class="k">{{ a.key }}</span>
+                              @if (a.link) {
+                                <a class="v" [href]="a.value" target="_blank" rel="noopener noreferrer">Open link ↗</a>
+                              } @else {
+                                <span class="v">{{ a.value }}</span>
+                              }
+                            </div>
+                          }
+                        </div>
+                        <div class="expanded-foot">
+                          <span>{{ detail(x).length }} attributes shown @if (!showEmpty()) { · {{ emptyCount(x) }} empty hidden }</span>
+                          <button type="button" class="link" (click)="showEmpty.set(!showEmpty())">{{ showEmpty() ? 'Hide empty' : 'Show empty' }}</button>
+                        </div>
+                      </div>
+                    }
+                  } @empty {
+                    <div class="empty">No interactions match this filter.</div>
+                  }
+
+                  <div class="pager">
+                    <span>{{ rangeLabel() }}</span>
+                    <div class="pager-controls">
+                      <label>Rows
+                        <select [value]="pageSize()" (change)="setPageSize(+$any($event.target).value)">
+                          <option value="10" [selected]="pageSize() === 10">10</option><option value="25" [selected]="pageSize() === 25">25</option><option value="50" [selected]="pageSize() === 50">50</option>
+                        </select>
+                      </label>
+                      <button type="button" class="btn small" [disabled]="page() === 0" (click)="goTo(page() - 1)">← Prev</button>
+                      <span>Page {{ page() + 1 }} of {{ pageCount() }}</span>
+                      <button type="button" class="btn small" [disabled]="page() >= pageCount() - 1" (click)="goTo(page() + 1)">Next →</button>
+                    </div>
+                  </div>
+                </div>
+              }
+            }
+          </section>
+        </div>
+      } @else {
+        <div class="raw">
+          @if (rawTruncated()) {
+            <p class="raw-note">Showing the first 20 interactions of each query. Use Download for the complete document.</p>
+          }
+          <pre>{{ rawPreview() }}</pre>
+        </div>
+      }
+    }
+  </div>
+</div>

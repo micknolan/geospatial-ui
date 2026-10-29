@@ -45,7 +45,7 @@ export class LoginComponent {
         // Demo accounts whose identity hasn't been bound to a workspace yet land on
         // the request-access flow instead of the app shell.
         const noWorkspace = this.username().trim().toLowerCase().includes('byrne');
-        this.router.navigateByUrl(noWorkspace ? '/request-access' : '/overview');
+        this.router.navigateByUrl(noWorkspace ? '/request-access' : '/dashboard');
       } else {
         this.errorMessage.set(result.message ?? 'Invalid username or password. Please try again.');
       }

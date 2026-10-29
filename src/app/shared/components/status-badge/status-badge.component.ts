@@ -4,6 +4,7 @@ const STATUS_CONFIG: Record<string, { color: string; label: string; pulse?: bool
   succeeded: { color: 'var(--status-success)', label: 'Succeeded' },
   running: { color: 'var(--status-running)', label: 'Running', pulse: true },
   failed: { color: 'var(--status-danger)', label: 'Failed' },
+  timed_out: { color: 'var(--status-danger)', label: 'Timed out' },
   draft: { color: 'var(--status-neutral)', label: 'Draft' },
   queued: { color: 'var(--status-neutral)', label: 'Queued' },
   validating: { color: 'var(--status-warning)', label: 'Validating…' },

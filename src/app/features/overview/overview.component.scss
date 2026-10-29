@@ -17,6 +17,9 @@
 }
 
 .crumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 13.5px;
   color: var(--ink-muted);
 }
